@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.why.my_blog.mapper.TagMapper">
+
+    <select id="findTagsByArticleId" resultType="com.why.my_blog.entity.Tag" parameterType="java.lang.Long">
+        select id,avatar,tag_name from ms_tag
+        where id in
+        (select tag_id from ms_article_tag where article_id=#{articleId})
+    </select>
+
+    <!--    sql语句的意思是在ms_article_tag表中查找tag_id，
+    根据tag_id将其聚合在一起，再根据count（*）的数量以递减的顺序排序最后限制输出两条数据-->
+    <select id="findHotsTagIds" resultType="java.lang.Long" parameterType="int">
+        select tag_id from ms_article_tag group by tag_id order by count(*) desc limit #{limit}
+    </select>
+</mapper>
